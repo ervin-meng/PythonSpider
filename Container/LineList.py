@@ -3,9 +3,9 @@ import redis
     
 class LineList:
 
-    _type = 'stack'; //queue
-    _name;
-    _media;
+    _type = 'stack' #queue
+    _name = ''
+    _media = ''
 
     def __init__(self,name='',media='redis'):
         self._name = name
@@ -21,7 +21,7 @@ class LineList:
         else:
             return  self._media.rpop(self._name)
 
-    def count(self):
+    def llen(self):
         return self._media.llen(self._name)
 
     def clean(self):

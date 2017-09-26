@@ -1,12 +1,12 @@
 # -*- coding=UTF-8 -*-
 import redis
 
-class Collection
+class Collection:
 
-    _name
-    _media
+    _name = ''
+    _media = ''
 
-    def __init__(slef,name,media='redis'): 
+    def __init__(self,name,media='redis'): 
         self._name = name
         if media=='redis':
             self._media = redis.Redis(host='127.0.0.1',port=6379,decode_responses=True)
@@ -15,7 +15,7 @@ class Collection
         return self._media.sadd(self._name,data)
 
     def delete(self,data):
-        return self._media.sremove(self._name,data)
+        return self._media.srem(self._name,data)
 
     def get(self,pop=True):
         if pop:
@@ -26,7 +26,7 @@ class Collection
     def isMember(self,data):
         return self._media.sismember(self._name,data)
 
-    def count(self):
+    def clen(self):
         return self._media.scard(self._name)
 
     def clean(self):
