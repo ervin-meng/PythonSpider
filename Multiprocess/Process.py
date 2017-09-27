@@ -189,15 +189,13 @@ OPTIONS
         print dt+" [NAME:"+self._name+"] "+msg+"\n";
 
     def getMasterPid(self):
-        f = open(self._pidfile,'r')
-        pid = f.read()
-        f.close()
+        with open(self._pidfile,'r') as f:
+            pid = f.read()
         return int(pid)
 
     def getRunFileName(self):
         return os.path.realpath(sys.argv[0])
 
     def _createMasterPidFile(self):
-        f = open(self._pidfile,'w')
-        f.write(str(self._pid))
-        f.close()
+        with open(self._pidfile,'w') as f:
+            f.write(str(self._pid))
