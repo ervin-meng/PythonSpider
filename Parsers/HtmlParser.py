@@ -1,4 +1,4 @@
--*- coding=UTF-8 -*_
+# -*- coding=UTF-8 -*-
 import lxml.etree,os
 from Adapters.CssSelector import CssSelector
 
