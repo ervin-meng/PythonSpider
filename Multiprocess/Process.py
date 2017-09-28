@@ -12,6 +12,7 @@ class Process:
     _ppid = 0
     _pidfile = ''
     _stdoutfile = ''
+    _stderrfile = ''
     _workers = {}
     _commands = ['start','stop','restart','reload','help']
     _option = False
@@ -129,9 +130,9 @@ OPTIONS
         sys.stdout.flush()  
         sys.stderr.flush()  
 
-        so = open(self.stdout, 'a+')  
-        if self.stderr:  
-            se = open(self.stderr, 'a+', 0)  
+        so = open(self._stdoutfile, 'a+')  
+        if self._stderrfile:  
+            se = open(self._stderrfile, 'a+', 0)  
         else:  
             se = so  
 

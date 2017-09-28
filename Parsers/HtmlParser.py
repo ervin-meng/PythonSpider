@@ -1,5 +1,6 @@
 # -*- coding=UTF-8 -*-
-import lxml.etree,os
+import os
+from lxml import etree
 from Adapters.CssSelector import CssSelector
 
 class HtmlParser:
@@ -9,11 +10,11 @@ class HtmlParser:
     
     @classmethod
     def load(cls,html):
-        if os.is_file(html):
+        if os.path.isfile(html):
             with open(html,'r') as f:
                 html = f.read()
                 
-        contextnode = etree.HTML(html.decode('utf-8'))
+        contextnode = etree.HTML(html)
         cls._root = contextnode
  
         return HtmlParser(contextnode)
@@ -26,7 +27,10 @@ class HtmlParser:
         text = [];
         nodeList = self.xpath(expression,contextnode)
         for node in nodeList:
-            text.append(node.text)
+            if isinstance(node,HtmlParser):
+                text.append(node.text())
+            else:
+                text.append(node)
         return text
 
     def find(self,expression,contextnode = None):
@@ -34,13 +38,14 @@ class HtmlParser:
         return self.xpath(expression,contextnode)
 
     def xpath(self,expression,contextnode = None):
-        if not contextnode and self._contextnode:
+        if contextnode is None and self._contextnode is not None:
             contextnode = self._contextnode
 
         nodeList = contextnode.xpath(expression)
+  
         result = []
         for node in nodeList:
-            node = HtmlParser(node)
+            node = HtmlParser(node) if isinstance(node,etree._Element) else node
             result.append(node)
             
         return result
@@ -57,9 +62,9 @@ class HtmlParser:
         return self
 
     def html(self,contextnode = None):
-        contextnode =  contextnode if contextnode else self._contextnode
+        contextnode =  contextnode if contextnode is not None else self._contextnode
         return etree.tostring(contextnode)
 
     def text(self,contextnode = None):
         contextnode =  contextnode if contextnode else self._contextnode
-        return contextnode->text
+        return contextnode.text

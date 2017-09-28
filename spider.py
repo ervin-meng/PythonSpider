@@ -1,7 +1,9 @@
 # -*- coding=UTF-8 -*-
-import time,json,requests,re
+import time,json,requests,re,copy
 from Utils.Hook import Hook
 from Utils.UserAgent import UserAgent
+from Utils.Format import Format
+from Parsers.HtmlParser import HtmlParser
 from Multiprocess.Process import Process
 from Proxy.Proxy import Proxy
 from Container.Collection import Collection
@@ -11,7 +13,7 @@ from Exception.SpiderException import SpiderException
 class Spider:
 
     name = ''
-    maxnum = 5
+    maxnum = 0
     interval = 5
     logfile = 'exception.log'
 
@@ -26,7 +28,7 @@ class Spider:
     _process = None
     _proxy = None
     
-    def getWorkId(self):
+    def getWorkerId(self):
         if isinstance(self._process,Process):
             id = self._process._pid
         else:
@@ -92,8 +94,9 @@ class Spider:
 
         url = self._downloading['url']
         method = 'get' if self._downloading['method'].strip()=='' else self._downloading['method']
-        options = self._options
-        options.update(self._downloading['options'])
+        print self._options
+        options = copy.deepcopy(self._options)
+        options.update(copy.deepcopy(self._downloading['options']))
 
         self._params = {'method':method,'url':url,'options':options}
 
@@ -132,8 +135,8 @@ class Spider:
             seed = {'url':url,'method':method,'options':options}
             if self._crawlCollection.isMember(seed):
                 continue
-            if self._partterns:
-                for parttern in self.patterns: 
+            if self._patterns:
+                for pattern in self._patterns: 
                     if re.match(pattern,url): 
                         self._discoverList.add(seed)
             else:
